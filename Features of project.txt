@@ -1,0 +1,27 @@
+==============================================
+        STUDENT QUIZ MANAGEMENT SYSTEM
+==============================================
+
+Welcome to the Student Quiz Management System!
+
+This system allows students to register, login, 
+and participate in quizzes created by the administrator.
+
+----------------------------------------------
+Project Features:
+----------------------------------------------
+✔️ Student Registration
+✔️ Student Login and Authentication
+✔️ Administrator Login and Quiz Creation
+✔️ Quiz Attempting by Students with Timer Feature
+✔️ Auto-Handling of Timeouts (30 seconds per question)
+✔️ Score Calculation and Result Saving
+✔️ Viewing Previous Results
+✔️ File Handling for Data Storage
+✔️ Use of Structures, Arrays, Loops, Functions, and Pointers
+✔️ Basic Exception Handling (Invalid Inputs, Missing Files)
+
+----------------------------------------------
+Thank you for using the system.
+Good luck with your quiz!
+==============================================
