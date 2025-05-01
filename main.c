@@ -21,3 +21,10 @@ typedef struct
     char option4[50];
     int correctOption;
 } Question;
+
+void registerStudent();
+int loginStudent();
+void createQuiz();
+void takeQuiz();
+void viewResults();
+void timerDelay(int seconds);
