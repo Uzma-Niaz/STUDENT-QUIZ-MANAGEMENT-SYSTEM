@@ -53,3 +53,35 @@ void registerStudent() {
     printf("Registration Successful!\n");
 }
 
+int loginStudent() {
+    FILE *fp;
+    Student s;
+    char id[20], password[20];
+    int found = 0;
+
+    fp = fopen("students.txt", "r");
+    if (fp == NULL) {
+        printf("Error opening file!\n");
+        return 0;
+    }
+
+    printf("Enter ID: ");
+    scanf("%s", id);
+    printf("Enter Password: ");
+    scanf("%s", password);
+
+    while (fread(&s, sizeof(Student), 1, fp)) {
+        if (strcmp(s.id, id) == 0 && strcmp(s.password, password) == 0) {
+            printf("Login Successful!\n");
+            found = 1;
+            break;
+        }
+    }
+    fclose(fp);
+
+    if (!found) {
+        printf("Login Failed. Try again.\n");
+    }
+    return found;
+}
+
