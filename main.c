@@ -86,6 +86,7 @@ int loginStudent() {
     return found;
 }
 
+//Admin login Function
 int adminLogin() {
     char adminPass[20];
     printf("Enter Admin Password: ");
@@ -99,3 +100,41 @@ int adminLogin() {
         return 0; // failed
     }
 }
+
+//Quiz Creation Function
+void createQuiz() {
+    FILE *fp;
+    Question q;
+    int n, i;
+
+    fp = fopen("quiz.txt", "w");
+    if (fp == NULL) {
+        printf("Error opening quiz file!\n");
+        return;
+    }
+
+    printf("How many questions to add? ");
+    scanf("%d", &n);
+
+    for (i = 0; i < n; i++) {
+        printf("\nEnter Question %d:\n", i + 1);
+        printf("Question: ");
+        scanf(" %[^\n]", q.question);
+        printf("Option 1: ");
+        scanf(" %[^\n]", q.option1);
+        printf("Option 2: ");
+        scanf(" %[^\n]", q.option2);
+        printf("Option 3: ");
+        scanf(" %[^\n]", q.option3);
+        printf("Option 4: ");
+        scanf(" %[^\n]", q.option4);
+        printf("Correct Option (1-4): ");
+        scanf("%d", &q.correctOption);
+
+        fwrite(&q, sizeof(Question), 1, fp);
+    }
+
+    fclose(fp);
+    printf("Quiz Created Successfully!\n");
+}
+
