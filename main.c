@@ -203,3 +203,41 @@ void viewResults() {
     }
     fclose(fp);
 }
+//Main menu
+int main() {
+    int choice, loginSuccess = 0;
+
+    while (1) {
+        printf("\n===== Student Quiz Management System =====\n");
+        printf("1. Register\n");
+        printf("2. Student Login\n");
+        printf("3. Admin Login (Create Quiz)\n");
+        printf("4. View Results\n");
+        printf("5. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                registerStudent();
+                break;
+            case 2:
+                loginSuccess = loginStudent();
+                if (loginSuccess) takeQuiz();
+                break;
+            case 3:
+                createQuiz();
+                break;
+            case 4:
+                viewResults();
+                break;
+            case 5:
+                printf("Exiting...\n");
+                exit(0);
+            default:
+                printf("Invalid choice. Try again.\n");
+        }
+    }
+    return 0;
+}
+
