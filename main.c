@@ -30,7 +30,7 @@ void takeQuiz();
 void viewResults();
 void timerDelay(int seconds);
 
-//Student registration function
+//student registration function
 void registerStudent() {
     FILE *fp;
     Student s;
@@ -86,7 +86,7 @@ int loginStudent() {
     return found;
 }
 
-//Admin login Function
+//admin login Function
 int adminLogin() {
     char adminPass[20];
     printf("Enter Admin Password: ");
@@ -101,7 +101,7 @@ int adminLogin() {
     }
 }
 
-//Quiz Creation Function
+//quiz creation function
 void createQuiz() {
     FILE *fp;
     Question q;
@@ -187,3 +187,19 @@ void takeQuiz() {
     }
 }
 
+void viewResults() {
+    FILE *fp;
+    char ch;
+
+    fp = fopen("results.txt", "r");
+    if (fp == NULL) {
+        printf("No Results Available.\n");
+        return;
+    }
+
+    printf("\n===== Previous Results =====\n");
+    while ((ch = fgetc(fp)) != EOF) {
+        putchar(ch);
+    }
+    fclose(fp);
+}
