@@ -91,6 +91,7 @@ getHiddenPassword(password);  // mask input
     return found;
 }
 
+<<<<<<< HEAD
 // Function to take password input with asterisks
 void getHiddenPassword(char *password) {
     int i = 0;
@@ -113,6 +114,10 @@ void getHiddenPassword(char *password) {
 
 // Admin login function
 // Admin login function with password masking
+=======
+//admin login Function
+
+>>>>>>> 363e5261304d1d41f7c775aed8d39fc62214b8cf
 int adminLogin() {
     char adminPass[20];
     printf("Enter Admin Password: ");
@@ -255,8 +260,11 @@ int main() {
     if (adminLogin()) {
         createQuiz();
     }
+<<<<<<< HEAD
     break;
 
+=======
+>>>>>>> 363e5261304d1d41f7c775aed8d39fc62214b8cf
             case 4:
                 viewResults();
                 break;
