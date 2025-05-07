@@ -1,10 +1,12 @@
 
 #include <stdio.h>
+#include <conio.h>  // Required for _getch() function to hide password input
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
 
 #define MAX 100
+
 
 typedef struct
 {
@@ -29,6 +31,7 @@ void createQuiz();
 void takeQuiz();
 void viewResults();
 void timerDelay(int seconds);
+void getHiddenPassword() ;
 
 //student registration function
 void registerStudent() {
@@ -69,7 +72,9 @@ int loginStudent() {
     printf("Enter ID: ");
     scanf("%s", id);
     printf("Enter Password: ");
-    scanf("%s", password);
+ printf("Enter Password: ");
+getHiddenPassword(password);  // mask input
+
 
     while (fread(&s, sizeof(Student), 1, fp)) {
         if (strcmp(s.id, id) == 0 && strcmp(s.password, password) == 0) {
@@ -81,23 +86,44 @@ int loginStudent() {
     fclose(fp);
 
     if (!found) {
-        printf("Login Failed. Try again.\n");
+        printf( "Login Failed. Try again.\n");
     }
     return found;
 }
 
-//admin login Function
+// Function to take password input with asterisks
+void getHiddenPassword(char *password) {
+    int i = 0;
+    char ch;
+    while ((ch = _getch()) != '\r' && i < 19) {  // Stop on Enter key
+        if (ch == '\b') {  // Handle backspace
+            if (i > 0) {
+                printf("\b \b");
+                i--;
+            }
+        } else {
+            password[i++] = ch;
+            printf("*");
+        }
+    }
+    password[i] = '\0';
+    printf("\n");
+}
+
+
+// Admin login function
+// Admin login function with password masking
 int adminLogin() {
     char adminPass[20];
     printf("Enter Admin Password: ");
-    scanf("%s", adminPass);
+    getHiddenPassword(adminPass);  // mask input
 
-    if (strcmp(adminPass, "admin123") == 0) {
+    if (strcmp(adminPass, "12345") == 0) {
         printf("Admin Login Successful!\n");
-        return 1; // success
+        return 1;
     } else {
         printf("Invalid Admin Password!\n");
-        return 0; // failed
+        return 0;
     }
 }
 
@@ -226,8 +252,11 @@ int main() {
                 if (loginSuccess) takeQuiz();
                 break;
             case 3:
-                createQuiz();
-                break;
+    if (adminLogin()) {
+        createQuiz();
+    }
+    break;
+
             case 4:
                 viewResults();
                 break;
@@ -240,4 +269,4 @@ int main() {
     }
     return 0;
 }
-
+ 
