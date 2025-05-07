@@ -1,4 +1,4 @@
-//Libraries
+//Libraries....
 #include <stdio.h>
 #include <conio.h>  // Required for _getch() function to hide password input
 #include <stdlib.h>
@@ -26,13 +26,14 @@ typedef struct
 } Question;
 
 void registerStudent();
-int loginStudent();
+int loginStudent(char *studentName);
 void createQuiz();
-void takeQuiz();
+void takeQuiz(const char *studentName);
 void viewResults();
 void timerDelay(int seconds);
 void getHiddenPassword() ;
-
+int loginStudent(char *studentName);
+char studentName[50];
 //student registration function
 void registerStudent() {
     FILE *fp;
@@ -57,7 +58,7 @@ void registerStudent() {
     printf("Registration Successful!\n");
 }
 
-int loginStudent() {
+int loginStudent(char *studentName){
     FILE *fp;
     Student s;
     char id[20], password[20];
@@ -79,6 +80,7 @@ getHiddenPassword(password);  // mask input
     while (fread(&s, sizeof(Student), 1, fp)) {
         if (strcmp(s.id, id) == 0 && strcmp(s.password, password) == 0) {
             printf("Login Successful!\n");
+            strcpy(studentName, s.name);  // save the name for later
             found = 1;
             break;
         }
@@ -91,7 +93,7 @@ getHiddenPassword(password);  // mask input
     return found;
 }
 
-<<<<<<< HEAD
+// HEAD
 // Function to take password input with asterisks
 void getHiddenPassword(char *password) {
     int i = 0;
@@ -114,10 +116,7 @@ void getHiddenPassword(char *password) {
 
 // Admin login function
 // Admin login function with password masking
-=======
-//admin login Function
 
->>>>>>> 363e5261304d1d41f7c775aed8d39fc62214b8cf
 int adminLogin() {
     char adminPass[20];
     printf("Enter Admin Password: ");
@@ -170,7 +169,7 @@ void createQuiz() {
 }
 
 //timer enabled quiz attempts function
-void takeQuiz() {
+void takeQuiz(const char *studentName) {
     FILE *fp;
     Question q;
     int score = 0, total = 0, answer;
@@ -213,7 +212,7 @@ void takeQuiz() {
 
     FILE *rfp = fopen("results.txt", "a");
     if (rfp != NULL) {
-        fprintf(rfp, "Score: %d/%d\n", score, total);
+     fprintf(rfp, "Name: %s | Score: %d/%d\n", studentName, score, total);
         fclose(rfp);
     }
 }
@@ -253,18 +252,16 @@ int main() {
                 registerStudent();
                 break;
             case 2:
-                loginSuccess = loginStudent();
-                if (loginSuccess) takeQuiz();
+               
+             loginSuccess = loginStudent(studentName);
+             if (loginSuccess) takeQuiz(studentName);
+
                 break;
             case 3:
     if (adminLogin()) {
         createQuiz();
     }
-<<<<<<< HEAD
     break;
-
-=======
->>>>>>> 363e5261304d1d41f7c775aed8d39fc62214b8cf
             case 4:
                 viewResults();
                 break;
