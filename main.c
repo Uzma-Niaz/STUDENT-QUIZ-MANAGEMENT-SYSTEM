@@ -87,12 +87,13 @@ int loginStudent() {
 }
 
 //admin login Function
+
 int adminLogin() {
     char adminPass[20];
     printf("Enter Admin Password: ");
     scanf("%s", adminPass);
 
-    if (strcmp(adminPass, "admin123") == 0) {
+    if (strcmp(adminPass, "12345") == 0) {
         printf("Admin Login Successful!\n");
         return 1; // success
     } else {
@@ -226,8 +227,9 @@ int main() {
                 if (loginSuccess) takeQuiz();
                 break;
             case 3:
-                createQuiz();
-                break;
+    if (adminLogin()) {
+        createQuiz();
+    }
             case 4:
                 viewResults();
                 break;
