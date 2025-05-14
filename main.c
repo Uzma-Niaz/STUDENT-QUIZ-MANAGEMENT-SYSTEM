@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <windows.h> 
 
 #define MAX 100
 
@@ -185,23 +186,35 @@ void takeQuiz(const char *studentName) {
     while (fread(&q, sizeof(Question), 1, fp)) {
         printf("\n%s\n", q.question);
         printf("1. %s\n2. %s\n3. %s\n4. %s\n", q.option1, q.option2, q.option3, q.option4);
-        printf("You have 30 seconds to answer...\n");
 
-        time(&start);
-        printf("Your Answer (1-4): ");
-        scanf("%d", &answer);
-        time(&end);
+printf("You have 30 seconds to answer...\n");
 
-        elapsed = difftime(end, start);
+int timeLimit = 30;
+int inputGiven = 0;
+int ch;
 
-        if (elapsed > 30) {
-            printf("Time's up!\n");
-        } else if (answer == q.correctOption) {
-            printf("Correct!\n");
-            score++;
-        } else {
-            printf("Wrong! Correct answer was %d\n", q.correctOption);
+while (timeLimit--) {
+    if (_kbhit()) {
+        ch = _getch();
+        if (ch >= '1' && ch <= '4') {
+            answer = ch - '0';
+            inputGiven = 1;
+            break;
         }
+    }
+    Sleep(1000); // wait 1 second
+    printf("%d seconds remaining...\r", timeLimit);
+}
+
+if (!inputGiven) {
+    printf("\nTime's up! Moving to next question.\n");
+} else if (answer == q.correctOption) {
+    printf("\nCorrect!\n");
+    score++;
+} else {
+    printf("\nWrong! Correct answer was %d\n", q.correctOption);
+}
+
 
         total++;
     }
