@@ -33,6 +33,7 @@ void takeQuiz(const char *studentName);
 void viewResults();
 void getHiddenPassword(char *password);
 int adminLogin();
+void displayFeedback(int score, int total);
 
 char studentName[50];
 
@@ -189,6 +190,52 @@ void createQuiz() {
     setColor(7);
 }
 
+// Display detailed feedback with color coding
+void displayFeedback(int score, int total) {
+    float percentage = ((float)score / total) * 100;
+    
+    setColor(3);
+    printf("\n===== Quiz Results =====\n");
+    printf("Score: %d/%d\n", score, total);
+    printf("Percentage: %.1f%%\n", percentage);
+    
+    setColor(14); // Yellow for feedback title
+    printf("\nFeedback: ");
+    
+    if (percentage >= 90) {
+        setColor(10); // Bright green
+        printf("Outstanding!\n");
+        printf("You have demonstrated excellent understanding of the material.\n");
+        printf("Keep up the great work!\n");
+    }
+    else if (percentage >= 75) {
+        setColor(2); // Green
+        printf("Very Good!\n");
+        printf("You have a strong grasp of most concepts with room for minor improvements.\n");
+        printf("Review the questions you missed to perfect your knowledge.\n");
+    }
+    else if (percentage >= 60) {
+        setColor(6); // Yellow
+        printf("Good Attempt\n");
+        printf("You understand the basics but need more practice in some areas.\n");
+        printf("Focus on the topics related to the questions you missed.\n");
+    }
+    else if (percentage >= 40) {
+        setColor(12); // Light red
+        printf("Needs Improvement\n");
+        printf("You're on the right track but need to review the material more thoroughly.\n");
+        printf("Consider studying the topics again and retaking the quiz.\n");
+    }
+    else {
+        setColor(4); // Red
+        printf("Requires Significant Improvement\n");
+        printf("You should revisit the study materials and concepts.\n");
+        printf("Don't get discouraged - use this as a learning opportunity!\n");
+    }
+    
+    setColor(7); // Reset to default color
+}
+
 // Take quiz (with shuffled questions)
 void takeQuiz(const char *studentName) {
     FILE *fp;
@@ -260,24 +307,23 @@ void takeQuiz(const char *studentName) {
         }
     }
 
-    float percentage = ((float)score / total) * 100;
-    char feedback[30];
+    // Display detailed feedback
+    displayFeedback(score, total);
 
-    if (percentage >= 80)
-        strcpy(feedback, "Excellent");
-    else if (percentage >= 50)
-        strcpy(feedback, "Good");
-    else
-        strcpy(feedback, "Needs Improvement");
-
-    setColor(3);
-    printf("\nQuiz Completed! Your Score: %d/%d\n", score, total);
-    printf("Feedback: %s\n", feedback);
-    setColor(7);
-
+    // Save results to file
     FILE *rfp = fopen("results.txt", "a");
     if (rfp != NULL) {
-        fprintf(rfp, "Name: %s | Score: %d/%d | Feedback: %s\n", studentName, score, total, feedback);
+        float percentage = ((float)score / total) * 100;
+        char feedback[50];
+        
+        if (percentage >= 90) strcpy(feedback, "Outstanding");
+        else if (percentage >= 75) strcpy(feedback, "Very Good");
+        else if (percentage >= 60) strcpy(feedback, "Good Attempt");
+        else if (percentage >= 40) strcpy(feedback, "Needs Improvement");
+        else strcpy(feedback, "Requires Significant Improvement");
+        
+        fprintf(rfp, "Name: %s | Score: %d/%d (%.1f%%) | Feedback: %s\n", 
+                studentName, score, total, percentage, feedback);
         fclose(rfp);
     }
 }
@@ -328,8 +374,11 @@ int main() {
                 break;
             case 2:
                 loginSuccess = loginStudent(studentName);
-                if (loginSuccess)
+                if (loginSuccess) {
+                    printf("\nPress any key to start the quiz...");
+                    _getch();
                     takeQuiz(studentName);
+                }
                 break;
             case 3:
                 if (adminLogin())
@@ -355,4 +404,3 @@ int main() {
 
     return 0;
 }
-
