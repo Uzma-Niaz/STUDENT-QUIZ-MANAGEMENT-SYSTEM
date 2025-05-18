@@ -7,6 +7,7 @@ Name: mariyam21 | Score: 2/2
 Name: araf | Score: 2/2
 Name: mayur | Score: 1/2
 Name: mayur | Score: 3/3
+<<<<<<< HEAD
 Name: mayur | Score: 2/3
 Name: mayur | Score: 2/3
 Name: mayur | Score: 2/3
@@ -15,3 +16,6 @@ Name: mayur | Score: 1/3
 Name: mayur | Score: 0/3
 Name: mayur | Score: 3/3
 Name: mayur | Score: 0/3 | Feedback: Needs Improvement
+=======
+Name: faizan | Score: 1/1
+>>>>>>> 7f5d2990ccec368cee07a2c46a0b2d2f2f9c6ce0
