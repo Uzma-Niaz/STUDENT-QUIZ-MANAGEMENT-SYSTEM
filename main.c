@@ -1,36 +1,34 @@
-// Libraries
+// Libraries....
 #include <stdio.h>
-#include <conio.h>     // For _getch() and _kbhit() to hide password input and detect key press
+#include <conio.h>  // Required for _getch() function to hide password input
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include <windows.h>   // For colors and Sleep
+#include <windows.h>
 
 #define MAX 100
 
-// Handle for console color output
 HANDLE hConsole;
 
-// Set console text color
 void setColor(int color) {
     SetConsoleTextAttribute(hConsole, color);
 }
 
-// Structure to store student data
 typedef struct {
     char name[50];
     char id[20];
     char password[20];
 } Student;
 
-// Structure to store a quiz question and options
 typedef struct {
     char question[200];
-    char option1[50], option2[50], option3[50], option4[50];
+    char option1[50];
+    char option2[50];
+    char option3[50];
+    char option4[50];
     int correctOption;
 } Question;
 
-// Function declarations
 void registerStudent();
 int loginStudent(char *studentName);
 void createQuiz();
@@ -38,18 +36,15 @@ void takeQuiz(const char *studentName);
 void viewResults();
 void getHiddenPassword(char *password);
 int adminLogin();
+void provideFeedback(int score, int total);
 
-// Global student name (used after login)
 char studentName[50];
 
-// Function to register a student
 void registerStudent() {
     FILE *fp;
     Student s;
 
-    system("cls");  // Clear screen
-
-    fp = fopen("students.txt", "a");  // Open student file to append
+    fp = fopen("students.txt", "a");
     if (fp == NULL) {
         setColor(4);
         printf("Error opening file!\n");
@@ -57,7 +52,6 @@ void registerStudent() {
         return;
     }
 
-    // Take student details
     printf("Enter Name: ");
     scanf(" %[^\n]", s.name);
     printf("Enter ID: ");
@@ -65,7 +59,6 @@ void registerStudent() {
     printf("Enter Password: ");
     scanf("%s", s.password);
 
-    // Save to file
     fwrite(&s, sizeof(Student), 1, fp);
     fclose(fp);
 
@@ -74,14 +67,12 @@ void registerStudent() {
     setColor(7);
 }
 
-// Function to login a student
 int loginStudent(char *studentName) {
     FILE *fp;
     Student s;
     char id[20], password[20];
     int found = 0;
 
-    system("cls");
     fp = fopen("students.txt", "r");
     if (fp == NULL) {
         setColor(4);
@@ -90,27 +81,23 @@ int loginStudent(char *studentName) {
         return 0;
     }
 
-    // Ask for login credentials
     printf("Enter ID: ");
     scanf("%s", id);
     printf("Enter Password: ");
     getHiddenPassword(password);
 
-    // Check each record in the file
     while (fread(&s, sizeof(Student), 1, fp)) {
         if (strcmp(s.id, id) == 0 && strcmp(s.password, password) == 0) {
-            system("cls");
             setColor(2);
             printf("Login Successful!\n");
             setColor(7);
-            strcpy(studentName, s.name);  // Save student name
+            strcpy(studentName, s.name);
             found = 1;
             break;
         }
     }
     fclose(fp);
 
-    // Show login result
     if (!found) {
         setColor(4);
         printf("Login Failed. Try again.\n");
@@ -119,12 +106,11 @@ int loginStudent(char *studentName) {
     return found;
 }
 
-// Function to get password input with * masking
 void getHiddenPassword(char *password) {
     int i = 0;
     char ch;
-    while ((ch = _getch()) != '\r' && i < 19) {  // Until Enter is pressed
-        if (ch == '\b') {  // Backspace
+    while ((ch = _getch()) != '\r' && i < 19) {
+        if (ch == '\b') {
             if (i > 0) {
                 printf("\b \b");
                 i--;
@@ -138,15 +124,12 @@ void getHiddenPassword(char *password) {
     printf("\n");
 }
 
-// Function for admin login
 int adminLogin() {
     char adminPass[20];
-    system("cls");
     printf("Enter Admin Password: ");
     getHiddenPassword(adminPass);
 
     if (strcmp(adminPass, "12345") == 0) {
-        system("cls");
         setColor(3);
         printf("Admin Login Successful!\n");
         setColor(7);
@@ -159,13 +142,11 @@ int adminLogin() {
     }
 }
 
-// Function to create quiz questions (admin only)
 void createQuiz() {
     FILE *fp;
     Question q;
     int n, i;
 
-    system("cls");
     fp = fopen("quiz.txt", "w");
     if (fp == NULL) {
         setColor(4);
@@ -174,7 +155,6 @@ void createQuiz() {
         return;
     }
 
-    // Input number of questions
     printf("How many questions to add? ");
     scanf("%d", &n);
 
@@ -193,7 +173,7 @@ void createQuiz() {
         printf("Correct Option (1-4): ");
         scanf("%d", &q.correctOption);
 
-        fwrite(&q, sizeof(Question), 1, fp);  // Save question to file
+        fwrite(&q, sizeof(Question), 1, fp);
     }
 
     fclose(fp);
@@ -202,7 +182,33 @@ void createQuiz() {
     setColor(7);
 }
 
-// Function to take quiz (for students)
+void provideFeedback(int score, int total) {
+    float percentage = (float)score / total * 100;
+    
+    setColor(3);
+    printf("\n===== Feedback =====\n");
+    
+    if (percentage >= 90) {
+        setColor(10); // Bright green
+        printf("Excellent! You have a strong understanding of the material.\n");
+    } 
+    else if (percentage >= 70) {
+        setColor(2); // Green
+        printf("Good job! You have a good grasp of most concepts.\n");
+    } 
+    else if (percentage >= 50) {
+        setColor(6); // Yellow
+        printf("Fair. You understand some concepts but need more practice.\n");
+    } 
+    else {
+        setColor(4); // Red
+        printf("Needs improvement. Consider reviewing the material and trying again.\n");
+    }
+    
+    printf("You scored %.1f%% (%d/%d)\n", percentage, score, total);
+    setColor(7);
+}
+
 void takeQuiz(const char *studentName) {
     FILE *fp;
     Question q;
@@ -218,8 +224,6 @@ void takeQuiz(const char *studentName) {
         return;
     }
 
-    system("cls");
-    // Read each question from file
     while (fread(&q, sizeof(Question), 1, fp)) {
         printf("\n%s\n", q.question);
         printf("1. %s\n2. %s\n3. %s\n4. %s\n", q.option1, q.option2, q.option3, q.option4);
@@ -230,8 +234,6 @@ void takeQuiz(const char *studentName) {
 
         timeLimit = 30;
         inputGiven = 0;
-
-        // Wait up to 30 seconds for input
         while (timeLimit--) {
             if (_kbhit()) {
                 ch = _getch();
@@ -241,13 +243,12 @@ void takeQuiz(const char *studentName) {
                     break;
                 }
             }
-            Sleep(1000);  // Wait 1 second
+            Sleep(1000);
             setColor(6);
             printf("%d seconds remaining...\r", timeLimit);
             setColor(7);
         }
 
-        // Evaluate answer
         if (!inputGiven) {
             setColor(4);
             printf("\nTime's up! Moving to next question.\n");
@@ -267,12 +268,13 @@ void takeQuiz(const char *studentName) {
 
     fclose(fp);
 
-    // Show final score
     setColor(3);
     printf("\nQuiz Completed! Your Score: %d/%d\n", score, total);
     setColor(7);
+    
+    // Provide feedback based on score
+    provideFeedback(score, total);
 
-    // Save result to results.txt
     FILE *rfp = fopen("results.txt", "a");
     if (rfp != NULL) {
         fprintf(rfp, "Name: %s | Score: %d/%d\n", studentName, score, total);
@@ -280,12 +282,10 @@ void takeQuiz(const char *studentName) {
     }
 }
 
-// Function to view past results (admin or anyone)
 void viewResults() {
     FILE *fp;
     char ch;
 
-    system("cls");
     fp = fopen("results.txt", "r");
     if (fp == NULL) {
         setColor(4);
@@ -303,13 +303,11 @@ void viewResults() {
     fclose(fp);
 }
 
-// Main menu loop
 int main() {
     int choice, loginSuccess = 0;
-    hConsole = GetStdHandle(STD_OUTPUT_HANDLE);  // For colors
+    hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
     while (1) {
-        system("cls");  // Clear screen each time menu shows
         setColor(1);
         printf("\n===== Student Quiz Management System =====\n");
         setColor(7);
@@ -321,19 +319,18 @@ int main() {
         printf("Enter your choice: ");
         scanf("%d", &choice);
 
-        // Menu options
         switch (choice) {
             case 1:
                 registerStudent();
                 break;
             case 2:
                 loginSuccess = loginStudent(studentName);
-                if (loginSuccess)
-                    takeQuiz(studentName);
+                if (loginSuccess) takeQuiz(studentName);
                 break;
             case 3:
-                if (adminLogin())
+                if (adminLogin()) {
                     createQuiz();
+                }
                 break;
             case 4:
                 viewResults();
@@ -348,11 +345,6 @@ int main() {
                 printf("Invalid choice. Try again.\n");
                 setColor(7);
         }
-
-        printf("\nPress any key to continue...");
-        _getch();  // Pause before returning to menu
     }
-
     return 0;
 }
-
