@@ -40,6 +40,62 @@ void displayFeedback(int score, int total);
 
 char studentName[50]; // Global variable to hold the logged-in student name
 
+
+// Main menu function
+int main() {
+    int choice, loginSuccess = 0;
+    hConsole = GetStdHandle(STD_OUTPUT_HANDLE); // Initialize console for coloring
+
+    while (1) {
+        system("cls");
+        setColor(1);
+        printf("\n===== Student Quiz Management System =====\n");
+        setColor(7);
+        printf("1. Register\n");
+        printf("2. Student Login\n");
+        printf("3. Admin Login (Create Quiz)\n");
+        printf("4. View Results\n");
+        printf("5. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                registerStudent();
+                break;
+            case 2:
+                loginSuccess = loginStudent(studentName);
+                if (loginSuccess) {
+                    printf("\nPress any key to start the quiz...");
+                    _getch();
+                    takeQuiz(studentName);
+                }
+                break;
+            case 3:
+                if (adminLogin())
+                    createQuiz();
+                break;
+            case 4:
+                viewResults();
+                break;
+            case 5:
+                setColor(3);
+                printf("Exiting...\n");
+                setColor(7);
+                exit(0);
+            default:
+                setColor(4);
+                printf("Invalid choice. Try again.\n");
+                setColor(7);
+        }
+
+        printf("\nPress any key to continue...");
+        _getch();
+    }
+
+    return 0;
+}
+
 // Function to register a new student
 void registerStudent() {
     FILE *fp;
@@ -357,58 +413,4 @@ void viewResults() {
     fclose(fp);
 }
 
-// Main menu function
-int main() {
-    int choice, loginSuccess = 0;
-    hConsole = GetStdHandle(STD_OUTPUT_HANDLE); // Initialize console for coloring
-
-    while (1) {
-        system("cls");
-        setColor(1);
-        printf("\n===== Student Quiz Management System =====\n");
-        setColor(7);
-        printf("1. Register\n");
-        printf("2. Student Login\n");
-        printf("3. Admin Login (Create Quiz)\n");
-        printf("4. View Results\n");
-        printf("5. Exit\n");
-        printf("Enter your choice: ");
-        scanf("%d", &choice);
-
-        switch (choice) {
-            case 1:
-                registerStudent();
-                break;
-            case 2:
-                loginSuccess = loginStudent(studentName);
-                if (loginSuccess) {
-                    printf("\nPress any key to start the quiz...");
-                    _getch();
-                    takeQuiz(studentName);
-                }
-                break;
-            case 3:
-                if (adminLogin())
-                    createQuiz();
-                break;
-            case 4:
-                viewResults();
-                break;
-            case 5:
-                setColor(3);
-                printf("Exiting...\n");
-                setColor(7);
-                exit(0);
-            default:
-                setColor(4);
-                printf("Invalid choice. Try again.\n");
-                setColor(7);
-        }
-
-        printf("\nPress any key to continue...");
-        _getch();
-    }
-
-    return 0;
-}
 
